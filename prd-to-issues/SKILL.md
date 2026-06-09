@@ -13,7 +13,7 @@ Break a PRD into independently-grabbable GitLab issues using vertical slices (tr
 
 Ask the user for the PRD GitLab issue number (or URL).
 
-If the PRD is not already in your context window, fetch it with `gh issue view <number>` (with comments).
+If the PRD is not already in your context window, fetch it with `glab issue view <number>` (with comments).
 
 ### 2. Explore the codebase (optional)
 
