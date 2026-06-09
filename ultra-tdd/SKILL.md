@@ -13,13 +13,13 @@ argument-hint: "[卡號或 ai/<repo>#N,逗號分隔 — 留空則接續下一個
 
 ## 鐵律(所有 dev agent 與其子 agent 必須遵守)
 
-下列是使用者(Jacc)親自拍板的開發契約。每一條都是硬性規則,違反即為錯誤。**派出的每個 agent 都要在 prompt 裡被提醒這些鐵律,並要求它轉述給自己 summon 的子 agent**。
+下列是使用者親自拍板的開發契約。每一條都是硬性規則,違反即為錯誤。**派出的每個 agent 都要在 prompt 裡被提醒這些鐵律,並要求它轉述給自己 summon 的子 agent**。
 
-1. **分支**:從本專案 main 工作分支(目前 `migration-v2-260602`)開 `feat/<key>-<slug>`,完成後 merge `--no-ff` 回該分支。**絕不碰 `dev` 分支**(不 checkout、不 merge、不 push)。
+1. **分支**:從本專案主要工作分支(例如dev或migration-260602等非feature branch)開 `feat/<key>-<slug>`,完成後 merge 回該分支。**絕不碰 `dev/stg/prd` 分支**(不 checkout、不 merge、不 push)。
 2. **DB migration**:Python/poetry 專案改 schema,**先** `cd src && poetry run alembic revision -m "msg"`(**手寫,不要 --autogenerate**),**再** `alembic upgrade head`。**永遠不直接對 DB 下 DDL/DML**。
 3. **建 DB / role**:唯一允許直接連 psql 的情境 = 建立新 database 或 role(`PGPASSWORD=1234 psql -h localhost -U postgres`)。除此之外不得用 psql 改任何東西。
 4. **localhost only**:任何情況只能連 `localhost` 的 psql。**嚴禁連任何非 localhost 的資料庫**。
-5. **Redis**:用契約檔指定的遠端 Redis(目前 `18.140.85.249:6378`,密碼見契約)。
+5. **Redis**:用契約檔指定的遠端 Redis(目前 `18.140.85.249:6378`,密碼見契約,若無契約,詢問使用者)。
 6. **Kafka**:需要時用 docker 跑,不假設外部有現成 broker。
 7. **深度委派**:不為並行而並行;任務清楚有界就交給新 agent,且該 agent 也要能再 summon 子 agent 做雜事(裝 deps、跑 lint、查 legacy)。
 8. **TDD**:**必須用 TDD 流程**——垂直切片(tracer bullet):一個測試 → 一段最小實作 → 重複。不要先寫一堆測試再寫一堆實作。測試驗證「行為(透過 public interface)」,不驗證實作細節。RED→GREEN→(全綠後)refactor。
